@@ -6,4 +6,4 @@ license.workspace = true
 
 [dependencies]
 photon-decoder = { path = "../photon-decoder" }
-pcap = "1.1"
+pcap.workspace = true
