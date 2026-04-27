@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "achievement-exporter-v*"
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: gh release create ${{ github.ref_name }} --draft --verify-tag --title ${{ github.ref_name }}
+    outputs:
+      tag: ${{ github.ref_name }}
+
+  build:
+    needs: create-release
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu
+            target: x86_64-unknown-linux-gnu
+            archive: achievement-exporter-x86_64-unknown-linux-gnu.tar.gz
+          - os: macos
+            target: aarch64-apple-darwin
+            archive: achievement-exporter-aarch64-apple-darwin.tar.gz
+          - os: windows
+            target: x86_64-pc-windows-msvc
+            archive: achievement-exporter-x86_64-pc-windows-msvc.zip
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install libpcap (Ubuntu)
+        if: matrix.os == 'ubuntu'
+        run: sudo apt-get update -y && sudo apt-get install -y libpcap-dev
+
+      - name: Install Npcap SDK (Windows)
+        if: matrix.os == 'windows'
+        shell: bash
+        run: |
+          curl -L -o /c/npcap-sdk.zip "https://npcap.com/dist/npcap-sdk-1.13.zip"
+          unzip /c/npcap-sdk.zip -d /c/npcap-sdk
+          echo "LIB=C:/npcap-sdk/Lib/x64" >> "$GITHUB_ENV"
+
+      - name: Build
+        run: cargo build --release -p achievement-exporter --target ${{ matrix.target }}
+
+      - name: Package and upload (Unix)
+        if: matrix.os != 'windows'
+        shell: bash
+        run: |
+          tar czf "${{ matrix.archive }}" -C "target/${{ matrix.target }}/release" achievement-exporter
+          gh release upload ${{ needs.create-release.outputs.tag }} "${{ matrix.archive }}"
+
+      - name: Package and upload (Windows)
+        if: matrix.os == 'windows'
+        shell: bash
+        run: |
+          7z a "${{ matrix.archive }}" "target/${{ matrix.target }}/release/achievement-exporter.exe"
+          gh release upload ${{ needs.create-release.outputs.tag }} "${{ matrix.archive }}"
