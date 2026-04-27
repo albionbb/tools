@@ -74,6 +74,9 @@ fn export_achievements(ev: &EventFullAchievementInfo) -> Result<usize, Box<dyn s
             continue;
         }
         let level = ev.active_achievement_levels.get(i).copied().unwrap_or(0);
+        if level == 0 {
+            continue;
+        }
         map.insert(ACHIEVEMENT_IDS[idx].to_string(), level);
     }
 
