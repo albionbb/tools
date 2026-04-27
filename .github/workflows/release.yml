@@ -54,7 +54,7 @@ jobs:
         if: matrix.os == 'windows'
         shell: bash
         run: |
-          curl -L -o /c/npcap-sdk.zip "https://npcap.com/dist/npcap-sdk-1.13.zip"
+          curl -L -o /c/npcap-sdk.zip "https://npcap.com/dist/npcap-sdk-1.16.zip"
           unzip /c/npcap-sdk.zip -d /c/npcap-sdk
           echo "LIB=C:/npcap-sdk/Lib/x64" >> "$GITHUB_ENV"
 
