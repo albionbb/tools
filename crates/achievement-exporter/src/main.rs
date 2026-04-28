@@ -7,6 +7,7 @@ use albion_packets::{AlbionOperation, decode_event};
 use photon_decoder::{PhotonListener, PhotonParser, PhotonValue};
 use std::collections::BTreeMap;
 use std::fs;
+use std::process::Command;
 
 const ALBION_PORT: u16 = 5056;
 const OUTPUT_FILE: &str = "achievement_export.json";
@@ -83,6 +84,14 @@ fn export_achievements(ev: &EventFullAchievementInfo) -> Result<usize, Box<dyn s
     let count = map.len();
     let json = serde_json::to_string_pretty(&map)?;
     fs::write(OUTPUT_FILE, json)?;
+
+    if let Ok(user) = std::env::var("SUDO_USER") {
+        Command::new("chown")
+            .args([&user, OUTPUT_FILE])
+            .status()
+            .ok();
+    }
+
     Ok(count)
 }
 
