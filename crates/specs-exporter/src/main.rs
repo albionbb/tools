@@ -99,7 +99,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("=======================");
     println!("Albionbb Specs Exporter");
     println!("=======================");
-    println!("Waiting for EventFullAchievementInfo...");
+    println!("Launch Albion Online or travel to a new zone to trigger the export.");
     println!();
 
     let mut cap = match open_live_capture(ALBION_PORT) {
