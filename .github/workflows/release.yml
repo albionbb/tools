@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "achievement-exporter-v*"
+      - "specs-exporter-v*.*.*"
 
 permissions:
   contents: write
@@ -31,13 +31,13 @@ jobs:
         include:
           - os: ubuntu
             target: x86_64-unknown-linux-gnu
-            archive: achievement-exporter-x86_64-unknown-linux-gnu.tar.gz
+            archive: specs-exporter-x86_64-unknown-linux-gnu.tar.gz
           - os: macos
             target: aarch64-apple-darwin
-            archive: achievement-exporter-aarch64-apple-darwin.tar.gz
+            archive: specs-exporter-aarch64-apple-darwin.tar.gz
           - os: windows
             target: x86_64-pc-windows-msvc
-            archive: achievement-exporter-x86_64-pc-windows-msvc.zip
+            archive: specs-exporter-x86_64-pc-windows-msvc.zip
 
     steps:
       - uses: actions/checkout@v6
@@ -59,18 +59,18 @@ jobs:
           echo "LIB=C:/npcap-sdk/Lib/x64" >> "$GITHUB_ENV"
 
       - name: Build
-        run: cargo build --release -p achievement-exporter --target ${{ matrix.target }}
+        run: cargo build --release -p specs-exporter --target ${{ matrix.target }}
 
       - name: Package and upload (Unix)
         if: matrix.os != 'windows'
         shell: bash
         run: |
-          tar czf "${{ matrix.archive }}" -C "target/${{ matrix.target }}/release" achievement-exporter
+          tar czf "${{ matrix.archive }}" -C "target/${{ matrix.target }}/release" specs-exporter
           gh release upload ${{ needs.create-release.outputs.tag }} "${{ matrix.archive }}"
 
       - name: Package and upload (Windows)
         if: matrix.os == 'windows'
         shell: bash
         run: |
-          7z a "${{ matrix.archive }}" "target/${{ matrix.target }}/release/achievement-exporter.exe"
+          7z a "${{ matrix.archive }}" "target/${{ matrix.target }}/release/specs-exporter.exe"
           gh release upload ${{ needs.create-release.outputs.tag }} "${{ matrix.archive }}"

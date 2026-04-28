@@ -10,7 +10,7 @@ use std::fs;
 use std::process::Command;
 
 const ALBION_PORT: u16 = 5056;
-const OUTPUT_FILE: &str = "achievement_export.json";
+const OUTPUT_FILE: &str = "specs_export.json";
 
 struct AchievementListener;
 
@@ -96,8 +96,9 @@ fn export_achievements(ev: &EventFullAchievementInfo) -> Result<usize, Box<dyn s
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    println!("Albionbb Achievement Exporter");
-    println!("==================================");
+    println!("=======================");
+    println!("Albionbb Specs Exporter");
+    println!("=======================");
     println!("Waiting for EventFullAchievementInfo...");
     println!();
 
