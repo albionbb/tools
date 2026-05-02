@@ -164,7 +164,7 @@ pub fn deserialize_parameter_table(data: &[u8]) -> HashMap<u8, PhotonValue> {
 }
 
 pub fn read_parameter_table(cursor: &mut io::Cursor<&[u8]>) -> HashMap<u8, PhotonValue> {
-    let count = read_count(cursor) as usize;
+    let count = cursor.read_u8().unwrap_or(0) as usize;
     let mut params = HashMap::with_capacity(count);
     for _ in 0..count {
         let Ok(key) = cursor.read_u8() else { break };
@@ -256,7 +256,7 @@ fn deserialize_typed_array(cursor: &mut io::Cursor<&[u8]>, elem_type: u8) -> Vec
         TYPE_CUSTOM => {
             let custom_type_id = cursor.read_u8().unwrap_or(0);
             (0..size)
-                .map(|_| deserialize_custom_payload(cursor, custom_type_id, false))
+                .map(|_| deserialize_custom_payload(cursor, custom_type_id))
                 .collect()
         }
         TYPE_DICTIONARY => (0..size)
@@ -277,8 +277,12 @@ fn deserialize_typed_array(cursor: &mut io::Cursor<&[u8]>, elem_type: u8) -> Vec
 
 fn deserialize_nested_array(cursor: &mut io::Cursor<&[u8]>) -> Vec<PhotonValue> {
     let size = read_count(cursor) as usize;
-    let tc = cursor.read_u8().unwrap_or(0);
-    (0..size).map(|_| deserialize(cursor, tc)).collect()
+    let mut result = Vec::with_capacity(size);
+    for _ in 0..size {
+        let tc = cursor.read_u8().unwrap_or(0);
+        result.push(deserialize(cursor, tc));
+    }
+    result
 }
 
 fn deserialize_object_array(cursor: &mut io::Cursor<&[u8]>) -> Vec<PhotonValue> {
@@ -315,34 +319,22 @@ fn deserialize_dictionary(cursor: &mut io::Cursor<&[u8]>) -> HashMap<PhotonValue
 }
 
 fn deserialize_custom(cursor: &mut io::Cursor<&[u8]>, gp_type: u8) -> PhotonValue {
-    let is_slim = gp_type >= CUSTOM_TYPE_SLIM_BASE;
-    let custom_id = if is_slim {
+    let custom_id = if gp_type >= CUSTOM_TYPE_SLIM_BASE {
         gp_type & 0x7F
     } else {
         cursor.read_u8().unwrap_or(0)
     };
-    deserialize_custom_payload(cursor, custom_id, is_slim)
+    deserialize_custom_payload(cursor, custom_id)
 }
 
 fn deserialize_custom_payload(
     cursor: &mut io::Cursor<&[u8]>,
     custom_id: u8,
-    is_slim: bool,
 ) -> PhotonValue {
     let size = read_count(cursor) as usize;
     let remaining = cursor.get_ref().len() - cursor.position() as usize;
-    if size > remaining {
-        if is_slim {
-            let mut data = vec![0u8; remaining];
-            let _ = cursor.read_exact(&mut data);
-            return PhotonValue::Custom {
-                id: custom_id,
-                data,
-            };
-        }
-        return PhotonValue::Null;
-    }
-    let mut data = vec![0u8; size];
+    let to_read = size.min(remaining);
+    let mut data = vec![0u8; to_read];
     let _ = cursor.read_exact(&mut data);
     PhotonValue::Custom {
         id: custom_id,
