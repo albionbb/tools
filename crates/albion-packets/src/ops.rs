@@ -114,6 +114,53 @@ pub struct EventFullAchievementInfo {
     pub active_achievement_levels: Vec<u8>,
 }
 
+#[derive(Debug, Clone, Default)]
+pub struct EventCharacterStats {
+    pub player_name: String,
+    pub guild_name: String,
+    pub alliance_name: String,
+    pub profile_description: String,
+    pub reputation: f32,
+    pub total_fame: u64,
+    pub fame_pvp: u64,
+    pub fame_pve: u64,
+    pub fame_gathering: u64,
+    pub fame_crafting: u64,
+    pub total_kills: u32,
+    pub resources_invested: u64,
+    pub current_rank: u32,
+    pub current_rank_points: u32,
+    pub highest_rank_points: u32,
+    pub standing_antiquarian: u64,
+    pub standing_brecilien: u64,
+    pub standing_smugglers: u64,
+    pub arena_battles_played: u32,
+    pub arena_battles_won: u32,
+    pub crystal_arena_matches_played: u32,
+    pub crystal_arena_matches_won: u32,
+    pub crystal_league_5v5_battles: u32,
+    pub crystal_league_5v5_wins: u32,
+    pub crystal_league_5v5_lethal_battles: u32,
+    pub crystal_league_5v5_lethal_wins: u32,
+    pub crystal_league_20v20_battles: u32,
+    pub crystal_league_20v20_wins: u32,
+    pub crystal_league_kills: u32,
+    pub crystal_league_kill_fame: u64,
+    pub crystal_realm_battles: u32,
+    pub crystal_realm_kills: u32,
+    pub crystal_realm_kill_fame: u64,
+    pub infamy_corrupted: u32,
+    pub infamy_2v2_hellgates: u32,
+    pub infamy_5v5_hellgates: u32,
+    pub infamy_10v10_hellgates: u32,
+    pub infamy_corrupted_highest: u32,
+    pub infamy_2v2_hellgates_highest: u32,
+    pub infamy_5v5_hellgates_highest: u32,
+    pub gvg_kills: u32,
+    pub gvg_fights_participated: u32,
+    pub gvg_fame: u64,
+}
+
 // ── conversion helpers ───────────────────────────────────────────────────────
 
 pub trait FromPhotonValue: Sized {
@@ -161,6 +208,7 @@ impl FromPhotonValue for i32 {
 impl FromPhotonValue for u32 {
     fn from_photon(value: &PhotonValue) -> Option<Self> {
         match value {
+            PhotonValue::Long(v) => Some(*v as u32),
             PhotonValue::Int(v) => Some(*v as u32),
             PhotonValue::Short(v) => Some(*v as u32),
             PhotonValue::Byte(v) => Some(*v as u32),

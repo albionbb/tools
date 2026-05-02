@@ -32,8 +32,9 @@ pub enum AlbionOperation {
     ResponseRealEstateGetAuctionData(OperationRealEstateGetAuctionDataResponse),
     ResponseRealEstateBidOnAuction(OperationRealEstateBidOnAuctionResponse),
 
-    EventRedZoneWorldMapEvent(EventRedZoneWorldMapEvent),
+    EventCharacterStats(EventCharacterStats),
     EventFullAchievementInfo(EventFullAchievementInfo),
+    EventRedZoneWorldMapEvent(EventRedZoneWorldMapEvent),
 
     UnknownRequest(u8, HashMap<u8, PhotonValue>),
     UnknownResponse(u8, i16, String, HashMap<u8, PhotonValue>),
@@ -187,6 +188,67 @@ pub fn decode_event(params: HashMap<u8, PhotonValue>) -> Option<AlbionOperation>
     let ev_type = EventType(code);
 
     match ev_type {
+        EventType::evCharacterStats => {
+            let standings = match params.get(&9) {
+                Some(PhotonValue::Dictionary(dict)) => {
+                    let get = |k: i32| -> u64 {
+                        match dict.get(&PhotonValue::Int(k)) {
+                            Some(PhotonValue::Long(v)) => *v as u64,
+                            Some(PhotonValue::Int(v)) => *v as u64,
+                            Some(PhotonValue::Short(v)) => *v as u64,
+                            _ => 0,
+                        }
+                    };
+                    (get(0), get(1), get(2))
+                }
+                _ => (0, 0, 0),
+            };
+            Some(AlbionOperation::EventCharacterStats(EventCharacterStats {
+                player_name: get_param(&params, 1).unwrap_or_default(),
+                guild_name: get_param(&params, 2).unwrap_or_default(),
+                alliance_name: get_param(&params, 4).unwrap_or_default(),
+                profile_description: get_param(&params, 5).unwrap_or_default(),
+                reputation: get_param(&params, 8).unwrap_or_default(),
+                total_fame: get_param(&params, 7).unwrap_or_default(),
+                fame_pvp: get_param(&params, 11).unwrap_or_default(),
+                fame_pve: get_param(&params, 13).unwrap_or_default(),
+                fame_gathering: get_param(&params, 14).unwrap_or_default(),
+                fame_crafting: get_param(&params, 16).unwrap_or_default(),
+                total_kills: get_param(&params, 10).unwrap_or_default(),
+                resources_invested: get_param(&params, 15).unwrap_or_default(),
+                current_rank: get_param(&params, 60).unwrap_or_default(),
+                current_rank_points: get_param(&params, 61).unwrap_or_default(),
+                highest_rank_points: get_param(&params, 62).unwrap_or_default(),
+                standing_brecilien: standings.0,
+                standing_smugglers: standings.1,
+                standing_antiquarian: standings.2,
+                arena_battles_played: get_param(&params, 29).unwrap_or_default(),
+                arena_battles_won: get_param(&params, 30).unwrap_or_default(),
+                crystal_arena_matches_played: get_param(&params, 31).unwrap_or_default(),
+                crystal_arena_matches_won: get_param(&params, 32).unwrap_or_default(),
+                crystal_league_5v5_battles: get_param(&params, 59).unwrap_or_default(),
+                crystal_league_5v5_wins: get_param(&params, 45).unwrap_or_default(),
+                crystal_league_5v5_lethal_battles: get_param(&params, 42).unwrap_or_default(),
+                crystal_league_5v5_lethal_wins: get_param(&params, 43).unwrap_or_default(),
+                crystal_league_20v20_battles: get_param(&params, 46).unwrap_or_default(),
+                crystal_league_20v20_wins: get_param(&params, 47).unwrap_or_default(),
+                crystal_league_kills: get_param(&params, 48).unwrap_or_default(),
+                crystal_league_kill_fame: get_param(&params, 49).unwrap_or_default(),
+                crystal_realm_battles: get_param(&params, 36).unwrap_or_default(),
+                crystal_realm_kills: get_param(&params, 38).unwrap_or_default(),
+                crystal_realm_kill_fame: get_param(&params, 39).unwrap_or_default(),
+                infamy_corrupted: get_param(&params, 52).unwrap_or_default(),
+                infamy_corrupted_highest: get_param(&params, 51).unwrap_or_default(),
+                infamy_2v2_hellgates: get_param(&params, 54).unwrap_or_default(),
+                infamy_2v2_hellgates_highest: get_param(&params, 53).unwrap_or_default(),
+                infamy_5v5_hellgates: get_param(&params, 56).unwrap_or_default(),
+                infamy_5v5_hellgates_highest: get_param(&params, 55).unwrap_or_default(),
+                infamy_10v10_hellgates: get_param(&params, 58).unwrap_or_default(),
+                gvg_kills: get_param(&params, 18).unwrap_or_default(),
+                gvg_fights_participated: get_param(&params, 17).unwrap_or_default(),
+                gvg_fame: get_param(&params, 19).unwrap_or_default(),
+            }))
+        }
         EventType::evRedZoneWorldMapEvent => Some(AlbionOperation::EventRedZoneWorldMapEvent(
             EventRedZoneWorldMapEvent {
                 event_time: get_param(&params, 0).unwrap_or_default(),
