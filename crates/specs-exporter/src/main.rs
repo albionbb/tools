@@ -1,6 +1,6 @@
 mod achievements;
 
-use achievements::ACHIEVEMENT_IDS;
+use achievements::ACHIEVEMENTS;
 use albion_packets::capture::{extract_payload, open_live_capture};
 use albion_packets::ops::EventFullAchievementInfo;
 use albion_packets::{AlbionOperation, decode_event};
@@ -55,19 +55,19 @@ fn export_achievements(ev: &EventFullAchievementInfo) -> Result<usize, Box<dyn s
 
     for &id in &ev.completed_achievement_ids {
         let idx = id as usize;
-        if idx >= ACHIEVEMENT_IDS.len() {
+        if idx >= ACHIEVEMENTS.len() {
             eprintln!(
                 "Warning: completed achievement id {} out of bounds, skipping",
                 id
             );
             continue;
         }
-        map.insert(ACHIEVEMENT_IDS[idx].to_string(), 100u8);
+        map.insert(ACHIEVEMENTS[idx].0.to_string(), ACHIEVEMENTS[idx].1);
     }
 
     for (i, &id) in ev.active_achievement_ids.iter().enumerate() {
         let idx = id as usize;
-        if idx >= ACHIEVEMENT_IDS.len() {
+        if idx >= ACHIEVEMENTS.len() {
             eprintln!(
                 "Warning: active achievement id {} out of bounds, skipping",
                 id
@@ -78,7 +78,7 @@ fn export_achievements(ev: &EventFullAchievementInfo) -> Result<usize, Box<dyn s
         if level == 0 {
             continue;
         }
-        map.insert(ACHIEVEMENT_IDS[idx].to_string(), level);
+        map.insert(ACHIEVEMENTS[idx].0.to_string(), level);
     }
 
     let count = map.len();
