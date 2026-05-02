@@ -187,5 +187,3 @@ fn parse_photon_attr(attr: &Attribute) -> ParsedPhotonAttr {
 
     ParsedPhotonAttr { kind }
 }
-
-

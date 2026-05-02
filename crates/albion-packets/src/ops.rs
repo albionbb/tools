@@ -421,5 +421,3 @@ impl FromPhotonValue for Vec<i16> {
 pub fn get_param<T: FromPhotonValue>(params: &HashMap<u8, PhotonValue>, key: u8) -> Option<T> {
     params.get(&key).and_then(T::from_photon)
 }
-
-
