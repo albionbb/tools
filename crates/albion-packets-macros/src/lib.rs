@@ -6,17 +6,17 @@ use syn::{
     parse_macro_input,
 };
 
-#[proc_macro_derive(PhotonEvent, attributes(photon))]
-pub fn derive_photon_event(input: TokenStream) -> TokenStream {
+#[proc_macro_derive(PhotonPacket, attributes(photon))]
+pub fn derive_photon_packet(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let struct_name = &input.ident;
 
     let fields = match &input.data {
         Data::Struct(data) => match &data.fields {
             Fields::Named(fields) => &fields.named,
-            _ => panic!("PhotonEvent only supports named fields"),
+            _ => panic!("PhotonPacket only supports named fields"),
         },
-        _ => panic!("PhotonEvent only supports structs"),
+        _ => panic!("PhotonPacket only supports structs"),
     };
 
     let decode_fields: Vec<_> = fields

@@ -1,13 +1,14 @@
+use albion_packets_macros::PhotonPacket;
 use photon_decoder::PhotonValue;
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationGetGameServerByCluster {
     #[photon(index = 1)]
     pub cluster_id: String,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationAuctionGetOffers {
     #[photon(index = 1)]
     pub category: String,
@@ -27,25 +28,25 @@ pub struct OperationAuctionGetOffers {
     pub is_ascending_order: bool,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationAuctionGetItemAverageStats {
     #[photon(index = 1)]
     pub item_id: u32,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationGetClusterMapInfo {
     #[photon(index = 1)]
     pub cluster_id: String,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationGoldMarketGetAverageInfo {}
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationRealEstateGetAuctionData {}
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationRealEstateBidOnAuction {
     #[photon(index = 1)]
     pub auction_id: u64,
@@ -53,7 +54,7 @@ pub struct OperationRealEstateBidOnAuction {
     pub bid_amount: u64,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationJoinResponse {
     #[photon(index = 1, decode_with = "crate::utils::decode_character_id")]
     pub character_id: String,
@@ -67,19 +68,19 @@ pub struct OperationJoinResponse {
     pub guild_name: String,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationAuctionGetOffersResponse {
     #[photon(index = 0)]
     pub market_orders: Vec<String>,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationAuctionGetRequestsResponse {
     #[photon(index = 0)]
     pub market_orders: Vec<String>,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationAuctionGetItemAverageStatsResponse {
     #[photon(index = 1)]
     pub item_id: u32,
@@ -87,13 +88,13 @@ pub struct OperationAuctionGetItemAverageStatsResponse {
     pub average_price: f64,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationGetMailInfosResponse {
     #[photon(index = 1)]
     pub mail_count: u32,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationReadMailResponse {
     #[photon(index = 1)]
     pub mail_id: u64,
@@ -103,7 +104,7 @@ pub struct OperationReadMailResponse {
     pub body: String,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationGetClusterMapInfoResponse {
     #[photon(index = 1)]
     pub cluster_id: String,
@@ -111,13 +112,13 @@ pub struct OperationGetClusterMapInfoResponse {
     pub cluster_name: String,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationGoldMarketGetAverageInfoResponse {
     #[photon(index = 1)]
     pub average_gold_price: f64,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationRealEstateGetAuctionDataResponse {
     #[photon(index = 1)]
     pub auction_id: u64,
@@ -127,7 +128,7 @@ pub struct OperationRealEstateGetAuctionDataResponse {
     pub buyout_price: u64,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationRealEstateBidOnAuctionResponse {
     #[photon(index = 1)]
     pub success: bool,
@@ -135,7 +136,7 @@ pub struct OperationRealEstateBidOnAuctionResponse {
     pub auction_id: u64,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct EventRedZoneWorldMapEvent {
     #[photon(index = 0)]
     pub event_time: i64,
@@ -143,7 +144,7 @@ pub struct EventRedZoneWorldMapEvent {
     pub phase: i32,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct EventFullAchievementInfo {
     #[photon(index = 1)]
     pub completed_achievement_ids: Vec<i16>,
@@ -153,7 +154,7 @@ pub struct EventFullAchievementInfo {
     pub active_achievement_levels: Vec<u8>,
 }
 
-#[derive(Debug, Clone, Default, albion_packets_macros::PhotonEvent)]
+#[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct EventCharacterStats {
     #[photon(index = 1)]
     pub player_name: String,
