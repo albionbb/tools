@@ -22,8 +22,18 @@ dependencies = [
 name = "albion-packets"
 version = "0.1.0"
 dependencies = [
+ "albion-packets-macros",
  "pcap",
  "photon-decoder",
+]
+
+[[package]]
+name = "albion-packets-macros"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
