@@ -6,6 +6,7 @@ Rust tools for capturing and decoding Albion Online network traffic.
 
 | Crate | Description |
 |-------|-------------|
+| `achievements-codegen` | Generates achievement data from game XML for `specs-exporter` |
 | `albion-packets` | Albion Online packet decoding + live packet capture |
 | `inspector` | CLI that prints decoded operations and events to stdout |
 | `photon-decoder` | Photon Protocol 18 parser and deserializer |
