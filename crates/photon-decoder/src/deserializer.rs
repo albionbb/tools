@@ -327,10 +327,7 @@ fn deserialize_custom(cursor: &mut io::Cursor<&[u8]>, gp_type: u8) -> PhotonValu
     deserialize_custom_payload(cursor, custom_id)
 }
 
-fn deserialize_custom_payload(
-    cursor: &mut io::Cursor<&[u8]>,
-    custom_id: u8,
-) -> PhotonValue {
+fn deserialize_custom_payload(cursor: &mut io::Cursor<&[u8]>, custom_id: u8) -> PhotonValue {
     let size = read_count(cursor) as usize;
     let remaining = cursor.get_ref().len() - cursor.position() as usize;
     let to_read = size.min(remaining);
