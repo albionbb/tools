@@ -1,5 +1,5 @@
 use crate::structs::*;
-use crate::types::{EventType, OperationType};
+use crate::types::{EvCode, OpCode};
 use crate::utils;
 use photon_decoder::PhotonValue;
 use std::collections::HashMap;
@@ -37,29 +37,23 @@ pub enum AlbionOperation {
 
 pub fn decode_request(params: HashMap<u8, PhotonValue>) -> Option<AlbionOperation> {
     let code = resolve_operation_code(&params)?;
-    let op_type = OperationType(code);
+    let op_code = OpCode(code);
 
-    match op_type {
-        OperationType::opGetGameServerByCluster => OperationGetGameServerByCluster::decode(&params)
+    match op_code {
+        OpCode::GetGameServerByCluster => OperationGetGameServerByCluster::decode(&params)
             .map(AlbionOperation::RequestGetGameServerByCluster),
-        OperationType::opAuctionGetOffers => {
+        OpCode::AuctionGetOffers => {
             OperationAuctionGetOffers::decode(&params).map(AlbionOperation::RequestAuctionGetOffers)
         }
-        OperationType::opAuctionGetItemAverageStats => {
-            OperationAuctionGetItemAverageStats::decode(&params)
-                .map(AlbionOperation::RequestAuctionGetItemAverageStats)
-        }
-        OperationType::opGetClusterMapInfo => OperationGetClusterMapInfo::decode(&params)
+        OpCode::AuctionGetItemAverageStats => OperationAuctionGetItemAverageStats::decode(&params)
+            .map(AlbionOperation::RequestAuctionGetItemAverageStats),
+        OpCode::GetClusterMapInfo => OperationGetClusterMapInfo::decode(&params)
             .map(AlbionOperation::RequestGetClusterMapInfo),
-        OperationType::opGoldMarketGetAverageInfo => {
-            OperationGoldMarketGetAverageInfo::decode(&params)
-                .map(AlbionOperation::RequestGoldMarketGetAverageInfo)
-        }
-        OperationType::opRealEstateGetAuctionData => {
-            OperationRealEstateGetAuctionData::decode(&params)
-                .map(AlbionOperation::RequestRealEstateGetAuctionData)
-        }
-        OperationType::opRealEstateBidOnAuction => OperationRealEstateBidOnAuction::decode(&params)
+        OpCode::GoldMarketGetAverageInfo => OperationGoldMarketGetAverageInfo::decode(&params)
+            .map(AlbionOperation::RequestGoldMarketGetAverageInfo),
+        OpCode::RealEstateGetAuctionData => OperationRealEstateGetAuctionData::decode(&params)
+            .map(AlbionOperation::RequestRealEstateGetAuctionData),
+        OpCode::RealEstateBidOnAuction => OperationRealEstateBidOnAuction::decode(&params)
             .map(AlbionOperation::RequestRealEstateBidOnAuction),
         _ => None,
     }
@@ -71,54 +65,50 @@ pub fn decode_response(
     _debug_message: String,
 ) -> Option<AlbionOperation> {
     let code = resolve_operation_code(&params)?;
-    let op_type = OperationType(code);
+    let op_code = OpCode(code);
 
-    match op_type {
-        OperationType::opJoin => {
-            OperationJoinResponse::decode(&params).map(AlbionOperation::ResponseJoin)
-        }
-        OperationType::opAuctionGetOffers => OperationAuctionGetOffersResponse::decode(&params)
+    match op_code {
+        OpCode::Join => OperationJoinResponse::decode(&params).map(AlbionOperation::ResponseJoin),
+        OpCode::AuctionGetOffers => OperationAuctionGetOffersResponse::decode(&params)
             .map(AlbionOperation::ResponseAuctionGetOffers),
-        OperationType::opAuctionGetRequests => OperationAuctionGetRequestsResponse::decode(&params)
+        OpCode::AuctionGetRequests => OperationAuctionGetRequestsResponse::decode(&params)
             .map(AlbionOperation::ResponseAuctionGetRequests),
-        OperationType::opAuctionGetItemAverageStats => {
+        OpCode::AuctionGetItemAverageStats => {
             OperationAuctionGetItemAverageStatsResponse::decode(&params)
                 .map(AlbionOperation::ResponseAuctionGetItemAverageStats)
         }
-        OperationType::opGetMailInfos => OperationGetMailInfosResponse::decode(&params)
+        OpCode::GetMailInfos => OperationGetMailInfosResponse::decode(&params)
             .map(AlbionOperation::ResponseGetMailInfos),
-        OperationType::opReadMail => {
+        OpCode::ReadMail => {
             OperationReadMailResponse::decode(&params).map(AlbionOperation::ResponseReadMail)
         }
-        OperationType::opGetClusterMapInfo => OperationGetClusterMapInfoResponse::decode(&params)
+        OpCode::GetClusterMapInfo => OperationGetClusterMapInfoResponse::decode(&params)
             .map(AlbionOperation::ResponseGetClusterMapInfo),
-        OperationType::opGoldMarketGetAverageInfo => {
+        OpCode::GoldMarketGetAverageInfo => {
             OperationGoldMarketGetAverageInfoResponse::decode(&params)
                 .map(AlbionOperation::ResponseGoldMarketGetAverageInfo)
         }
-        OperationType::opRealEstateGetAuctionData => {
+        OpCode::RealEstateGetAuctionData => {
             OperationRealEstateGetAuctionDataResponse::decode(&params)
                 .map(AlbionOperation::ResponseRealEstateGetAuctionData)
         }
-        OperationType::opRealEstateBidOnAuction => {
-            OperationRealEstateBidOnAuctionResponse::decode(&params)
-                .map(AlbionOperation::ResponseRealEstateBidOnAuction)
-        }
+        OpCode::RealEstateBidOnAuction => OperationRealEstateBidOnAuctionResponse::decode(&params)
+            .map(AlbionOperation::ResponseRealEstateBidOnAuction),
         _ => None,
     }
 }
 
 pub fn decode_event(params: HashMap<u8, PhotonValue>) -> Option<AlbionOperation> {
     let code = resolve_event_code(&params)?;
-    let ev_type = EventType(code);
+    let ev_code = EvCode(code);
 
-    match ev_type {
-        EventType::evCharacterStats => {
+    match ev_code {
+        EvCode::CharacterStats => {
             EventCharacterStats::decode(&params).map(AlbionOperation::EventCharacterStats)
         }
-        EventType::evRedZoneWorldMapEvent => EventRedZoneWorldMapEvent::decode(&params)
+        EvCode::RedZoneWorldMapEvent => EventRedZoneWorldMapEvent::decode(&params)
             .map(AlbionOperation::EventRedZoneWorldMapEvent),
-        EventType::evFullAchievementInfo => {
+        EvCode::FullAchievementInfo => {
             EventFullAchievementInfo::decode(&params).map(AlbionOperation::EventFullAchievementInfo)
         }
         _ => None,

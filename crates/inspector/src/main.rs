@@ -1,5 +1,5 @@
 use albion_packets::capture::{extract_payload, open_live_capture};
-use albion_packets::types::OperationType;
+use albion_packets::types::OpCode;
 use albion_packets::{decode_event, decode_request, decode_response};
 use photon_decoder::{PhotonListener, PhotonParser, PhotonValue};
 use std::collections::HashMap;
@@ -35,10 +35,7 @@ impl PhotonListener for AlbionListener {
         if let Some(PhotonValue::Array(arr)) = params.get(&0)
             && arr.iter().all(|v| matches!(v, PhotonValue::String(_)))
         {
-            params.insert(
-                253,
-                PhotonValue::Short(OperationType::opAuctionGetOffers.0 as i16),
-            );
+            params.insert(253, PhotonValue::Short(OpCode::AuctionGetOffers.0 as i16));
         }
 
         if let Some(op) = decode_response(params, return_code, debug_message.clone()) {

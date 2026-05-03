@@ -1,5 +1,5 @@
 pub mod events;
 pub mod operations;
 
-pub use events::EventType;
-pub use operations::OperationType;
+pub use events::EvCode;
+pub use operations::OpCode;

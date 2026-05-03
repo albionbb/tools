@@ -1,6 +1,3 @@
-use crate::types::events::EventType;
-use crate::types::operations::OperationType;
-
 /// Decodes a mixed-endian UUID from bytes (Albion's CharacterID format).
 /// First 4 bytes LE, next 2 bytes LE, next 2 bytes LE, remaining 8 bytes BE.
 pub fn decode_character_id(bytes: &[u8]) -> String {
@@ -39,40 +36,39 @@ pub fn decode_character_id(bytes: &[u8]) -> String {
     )
 }
 
+const MAX_OPCODE: u16 = 539;
+const MAX_EVCODE: u16 = 680;
+
 pub fn normalize_operation_code(code: u16) -> u16 {
-    if is_known_operation_code(code) {
+    if code <= MAX_OPCODE {
         return code;
     }
     let swapped = code.rotate_left(8);
-    if is_known_operation_code(swapped) {
+    if swapped <= MAX_OPCODE {
         return swapped;
     }
     if code > 0x00FF && code & 0x00FF == 0 {
-        return code >> 8;
+        let shifted = code >> 8;
+        if shifted <= MAX_OPCODE {
+            return shifted;
+        }
     }
     code
 }
 
 pub fn normalize_event_code(code: u16) -> u16 {
-    if is_known_event_code(code) {
+    if code <= MAX_EVCODE {
         return code;
     }
     let swapped = code.rotate_left(8);
-    if is_known_event_code(swapped) {
+    if swapped <= MAX_EVCODE {
         return swapped;
     }
     if code > 0x00FF && code & 0x00FF == 0 {
-        return code >> 8;
+        let shifted = code >> 8;
+        if shifted <= MAX_EVCODE {
+            return shifted;
+        }
     }
     code
-}
-
-fn is_known_operation_code(code: u16) -> bool {
-    let name = OperationType(code).to_string();
-    !name.starts_with("OperationType(")
-}
-
-fn is_known_event_code(code: u16) -> bool {
-    let name = EventType(code).to_string();
-    !name.starts_with("EventType(")
 }
