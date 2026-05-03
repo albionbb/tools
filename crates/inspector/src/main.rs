@@ -1,5 +1,5 @@
 use albion_packets::capture::{extract_payload, open_live_capture};
-use albion_packets::operations::OperationType;
+use albion_packets::types::OperationType;
 use albion_packets::{decode_event, decode_request, decode_response};
 use photon_decoder::{PhotonListener, PhotonParser, PhotonValue};
 use std::collections::HashMap;
