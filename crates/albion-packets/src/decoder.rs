@@ -1,5 +1,5 @@
+use crate::codes::{EvCode, OpCode};
 use crate::structs::*;
-use crate::types::{EvCode, OpCode};
 use crate::utils;
 use photon_decoder::PhotonValue;
 use std::collections::HashMap;
