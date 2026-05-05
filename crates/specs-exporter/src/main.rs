@@ -2,7 +2,7 @@ mod achievements;
 
 use achievements::ACHIEVEMENTS;
 use albion_packets::capture::{extract_payload, open_live_capture};
-use albion_packets::ops::EventFullAchievementInfo;
+use albion_packets::structs::EventFullAchievementInfo;
 use albion_packets::{AlbionOperation, decode_event};
 use photon_decoder::{PhotonListener, PhotonParser, PhotonValue};
 use std::collections::BTreeMap;

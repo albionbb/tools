@@ -1,5 +1,5 @@
-use crate::events::EventType;
-use crate::operations::OperationType;
+use crate::types::events::EventType;
+use crate::types::operations::OperationType;
 
 /// Decodes a mixed-endian UUID from bytes (Albion's CharacterID format).
 /// First 4 bytes LE, next 2 bytes LE, next 2 bytes LE, remaining 8 bytes BE.

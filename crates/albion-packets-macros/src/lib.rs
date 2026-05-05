@@ -48,7 +48,7 @@ pub fn derive_photon_packet(input: TokenStream) -> TokenStream {
                     };
 
                     quote! {
-                        #field_name: crate::ops::get_param::<#field_type>(&params, #index)
+                        #field_name: crate::convert::get_param::<#field_type>(&params, #index)
                             #unwrap_expr
                     }
                 }
@@ -79,7 +79,7 @@ pub fn derive_photon_packet(input: TokenStream) -> TokenStream {
                 }
                 PhotonFieldKind::DecodeWith { index, decoder } => {
                     quote! {
-                        #field_name: crate::ops::get_param::<::std::vec::Vec<u8>>(&params, #index)
+                        #field_name: crate::convert::get_param::<::std::vec::Vec<u8>>(&params, #index)
                             .map(|bytes| #decoder(&bytes))
                             .unwrap_or_default()
                     }
