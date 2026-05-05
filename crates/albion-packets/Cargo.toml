@@ -6,4 +6,5 @@ license.workspace = true
 
 [dependencies]
 photon-decoder = { path = "../photon-decoder" }
+albion-packets-macros = { path = "../albion-packets-macros" }
 pcap.workspace = true
