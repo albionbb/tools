@@ -88,18 +88,26 @@ pub struct OperationAuctionGetItemAverageStatsResponse {
 
 #[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationGetMailInfosResponse {
-    #[photon(index = 1)]
-    pub mail_count: u32,
+    #[photon(index = 7)]
+    pub senders: Vec<String>,
+    #[photon(index = 9)]
+    pub mail_categories: Vec<u8>,
+    #[photon(index = 10)]
+    pub read_status: Vec<bool>,
+    #[photon(index = 11)]
+    pub mail_types: Vec<String>,
+    #[photon(index = 12)]
+    pub timestamps: Vec<i64>,
 }
 
 #[derive(Debug, Clone, Default, PhotonPacket)]
 pub struct OperationReadMailResponse {
+    #[photon(index = 0)]
+    pub mail_id: i64,
     #[photon(index = 1)]
-    pub mail_id: u64,
-    #[photon(index = 2)]
-    pub subject: String,
-    #[photon(index = 3)]
-    pub body: String,
+    pub data: String,
+    #[photon(index = 9)]
+    pub was_read: bool,
 }
 
 #[derive(Debug, Clone, Default, PhotonPacket)]
