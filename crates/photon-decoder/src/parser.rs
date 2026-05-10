@@ -26,16 +26,17 @@ struct SegmentedPackage {
 
 /// Callbacks for parsed Photon messages.
 pub trait PhotonListener {
-    fn on_request(&mut self, operation_code: u8, params: HashMap<u8, PhotonValue>);
+    fn on_request(&mut self, _operation_code: u8, _params: HashMap<u8, PhotonValue>) {}
     fn on_response(
         &mut self,
-        operation_code: u8,
-        return_code: i16,
-        debug_message: String,
-        params: HashMap<u8, PhotonValue>,
-    );
-    fn on_event(&mut self, code: u8, params: HashMap<u8, PhotonValue>);
-    fn on_encrypted(&mut self);
+        _operation_code: u8,
+        _return_code: i16,
+        _debug_message: String,
+        _params: HashMap<u8, PhotonValue>,
+    ) {
+    }
+    fn on_event(&mut self, _code: u8, _params: HashMap<u8, PhotonValue>) {}
+    fn on_encrypted(&mut self) {}
 }
 
 /// Parses raw Photon UDP/TCP payloads and fires callbacks.

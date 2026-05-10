@@ -7,5 +7,5 @@ license.workspace = true
 [dependencies]
 photon-decoder = { path = "../photon-decoder" }
 albion-packets = { path = "../albion-packets" }
-pcap.workspace = true
+capture = { path = "../capture" }
 serde_json = "1"

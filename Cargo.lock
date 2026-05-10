@@ -23,7 +23,6 @@ name = "albion-packets"
 version = "0.1.0"
 dependencies = [
  "albion-packets-macros",
- "pcap",
  "photon-decoder",
 ]
 
@@ -47,6 +46,14 @@ name = "byteorder"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1fd0f2584146f6f2ef48085050886acf353beff7305ebd1ae69500e27c67f64b"
+
+[[package]]
+name = "capture"
+version = "0.1.0"
+dependencies = [
+ "pcap",
+ "photon-decoder",
+]
 
 [[package]]
 name = "cc"
@@ -96,7 +103,7 @@ name = "inspector"
 version = "0.1.0"
 dependencies = [
  "albion-packets",
- "pcap",
+ "capture",
  "photon-decoder",
 ]
 
@@ -262,7 +269,7 @@ name = "specs-exporter"
 version = "0.4.0"
 dependencies = [
  "albion-packets",
- "pcap",
+ "capture",
  "photon-decoder",
  "serde_json",
 ]
