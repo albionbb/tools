@@ -172,6 +172,39 @@ impl FromPhotonValue for Vec<i16> {
     }
 }
 
+impl FromPhotonValue for Vec<i64> {
+    fn from_photon(value: &PhotonValue) -> Option<Self> {
+        match value {
+            PhotonValue::Array(arr) => arr
+                .iter()
+                .map(|v| match v {
+                    PhotonValue::Long(l) => Some(*l),
+                    PhotonValue::Int(i) => Some(*i as i64),
+                    PhotonValue::Short(s) => Some(*s as i64),
+                    PhotonValue::Byte(b) => Some(*b as i64),
+                    _ => None,
+                })
+                .collect(),
+            _ => None,
+        }
+    }
+}
+
+impl FromPhotonValue for Vec<bool> {
+    fn from_photon(value: &PhotonValue) -> Option<Self> {
+        match value {
+            PhotonValue::Array(arr) => arr
+                .iter()
+                .map(|v| match v {
+                    PhotonValue::Bool(b) => Some(*b),
+                    _ => None,
+                })
+                .collect(),
+            _ => None,
+        }
+    }
+}
+
 pub fn get_param<T: FromPhotonValue>(params: &HashMap<u8, PhotonValue>, key: u8) -> Option<T> {
     params.get(&key).and_then(T::from_photon)
 }
